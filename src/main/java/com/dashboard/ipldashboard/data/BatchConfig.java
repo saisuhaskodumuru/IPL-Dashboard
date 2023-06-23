@@ -15,12 +15,10 @@ import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilde
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
-//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.PlatformTransactionManager;
-
 import com.dashboard.ipldashboard.model.Match;
 
 @Configuration
@@ -42,17 +40,13 @@ public class BatchConfig {
 
     @Bean
     public FlatFileItemReader<MatchInput> reader() {
-        return new FlatFileItemReaderBuilder<MatchInput>()
-                .name("matchInputReader")
-                .resource(new ClassPathResource("match-data.csv"))
-                .delimited()
-                .names(FEILD_NAMES)
+        return new FlatFileItemReaderBuilder<MatchInput>().name("MatchItemReader")
+                .resource(new ClassPathResource("match-data.csv")).delimited().names(FEILD_NAMES)
                 .fieldSetMapper(new BeanWrapperFieldSetMapper<MatchInput>() {
                     {
                         setTargetType(MatchInput.class);
                     }
-                })
-                .build();
+                }).build();
     }
 
     @Bean
@@ -61,6 +55,7 @@ public class BatchConfig {
     }
 
     @Bean
+
     public JdbcBatchItemWriter<Match> writer(DataSource dataSource) {
         return new JdbcBatchItemWriterBuilder<Match>()
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
